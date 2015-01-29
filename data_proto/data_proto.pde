@@ -20,10 +20,11 @@ import de.fhpotsdam.unfolding.providers.*;
 Table popData;
 UnfoldingMap map;
 ControlP5 cp5;
-int sliderMin = 2008;
+int sliderMin = 2011;
 int sliderInterval = 4;
 int sliderMax = 2014;
 float sliderTicks1 = sliderMax;
+int year = 2011;
 RadioButton r;
 
 
@@ -82,11 +83,11 @@ void draw() {
     String districtName = popRow.getString("Stadtteil");
     float lat = popRow.getFloat("Latitude");
     float lng = popRow.getFloat("Longitude");
-    int popTotal = popRow.getInt("Einwohner_2014_Q1");
-    int unEmployTotal = popRow.getInt("Arbeitslose_2014_Q1");
-    int employTotal = popRow.getInt("Beschaeftigte_2014_Q1");
-    int basSec = popRow.getInt("Grundsicherung65+_2014_Q1");
-    int migTotal = popRow.getInt("Mighintergrund_2014_Q1");
+    int popTotal = popRow.getInt("Einwohner_"+ year +"_Q1");
+    int unEmployTotal = popRow.getInt("Arbeitslose_" + year + "_Q1");
+    int employTotal = popRow.getInt("Beschaeftigte_"+year+"_Q1");
+    int basSec = popRow.getInt("Grundsicherung65+_"+year+"_Q1");
+    int migTotal = popRow.getInt("Mighintergrund_"+year+"_Q1");
 
 
 
@@ -160,6 +161,9 @@ void sliderTicks1(float val) {
   // handle slider event
   println("Slider event: " + val);
   cp5.getController("sliderTicks1").getValueLabel()
-    .setText("_" + floor(val) + "_Q" + (int) (val * 100 % 100 / 100 * 4 + 1));
+    .setText(" " + floor(val) + " Q" + (int) (val * 100 % 100 / 100 * 4 + 1));
+    year = (int)val;
+    println(year);
+    
 }
 
