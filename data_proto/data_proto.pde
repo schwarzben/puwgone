@@ -21,7 +21,7 @@ Table popData;
 UnfoldingMap map;
 ControlP5 cp5;
 int sliderMin = 2011;
-int sliderInterval = 4;
+int sliderInterval = 1;
 int sliderMax = 2014;
 float sliderTicks1 = sliderMax;
 int year = 2011;
@@ -160,8 +160,11 @@ void draw() {
 void sliderTicks1(float val) {
   // handle slider event
   println("Slider event: " + val);
+//  cp5.getController("sliderTicks1").getValueLabel()
+//    .setText(" " + floor(val) + " Q" + (int) (val * 100 % 100 / 100 * 4 + 1));
   cp5.getController("sliderTicks1").getValueLabel()
-    .setText(" " + floor(val) + " Q" + (int) (val * 100 % 100 / 100 * 4 + 1));
+    .setText(" " + floor(val) );
+
     year = (int)val;
     println(year);
     
