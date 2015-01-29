@@ -24,6 +24,8 @@ int sliderMin = 2008;
 int sliderInterval = 4;
 int sliderMax = 2014;
 float sliderTicks1 = sliderMax;
+RadioButton r;
+
 
 void setup() {
   size(800, 600, P2D);
@@ -39,13 +41,35 @@ void setup() {
   // the value of variable sliderTicks2 then.
   cp5.addSlider("sliderTicks1")
     .setPosition(10, 10)
-      .setSize(100, 10)
+      .setSize(100, 20)
         .setRange(sliderMin, sliderMax)
           .setNumberOfTickMarks((sliderMax-sliderMin) * sliderInterval + 1)
             .snapToTickMarks(true)
               ;
-}
 
+// Radiobutton Control 
+  r = cp5.addRadioButton("radioButton")
+    .setPosition(10, 40)
+      .setSize(40, 20)
+        .setColorForeground(color(120))
+          .setColorActive(color(255))
+            .setColorLabel(color(255))
+              .setSpacingColumn(50)
+                .addItem("Bevoelkerung", 1)
+                  .addItem("Migrationshintergrund", 2)
+                    .addItem("Grundsicherung 65+", 3)
+                      .addItem("Beschaeftigte", 4)
+                        .addItem("Arbeitslose", 5)
+                          ;
+
+  for (Toggle t : r.getItems ()) {
+    t.captionLabel().setColorBackground(color(0, 80));
+    t.captionLabel().style().moveMargin(-7, 0, 0, -3);
+    t.captionLabel().style().movePadding(7, 0, 0, 3);
+    t.captionLabel().style().backgroundWidth = 120;
+    t.captionLabel().style().backgroundHeight = 13;
+  }
+}
 void draw() {
   background(255);
 
@@ -59,17 +83,69 @@ void draw() {
     float lat = popRow.getFloat("Latitude");
     float lng = popRow.getFloat("Longitude");
     int popTotal = popRow.getInt("Einwohner_2014_Q1");
+    int unEmployTotal = popRow.getInt("Arbeitslose_2014_Q1");
+    int employTotal = popRow.getInt("Beschaeftigte_2014_Q1");
+    int basSec = popRow.getInt("Grundsicherung65+_2014_Q1");
+    int migTotal = popRow.getInt("Mighintergrund_2014_Q1");
+
+
+
     Location loc = new Location(lat, lng);
     ScreenPosition pos = map.getScreenPosition(loc);
+    float z = map.getZoom()*0.001;
+
     if (!districtName.equals("KielGesamt")) {
+      float texW = textWidth(districtName)/2;
+
+      //Visualizing Total Population
+      if (r.getState(0)) {
+        float popS = map(popTotal, 0, 240386, 0, 150)*z;
+        noStroke();
+        rectMode(CORNER);
+        fill(255, 0, 0, 180);
+        rect(pos.x - texW, pos.y, popS, popS);
+      }
+
+      //Visualizing Migration
+      if (r.getState(1)) {
+        float popM = map((float)migTotal/popTotal, 0, 1, 0, 20)*z;     
+        noStroke();
+        rectMode(CORNER);
+        fill(255, 0, 0, 180);
+        rect(pos.x - texW, pos.y, popM, popM);
+      }
+
+      //Visualizing Basic Security at old age
+      if (r.getState(2)) {
+        float popB = map((float)basSec/popTotal, 0, 1, 0, 20)*z;     
+        noStroke();
+        rectMode(CORNER);
+        fill(255, 0, 0, 180);
+        rect(pos.x - texW, pos.y, popB, popB);
+      }
+
+      //Visualizing Employees
+      if (r.getState(3)) {
+        float popE = map((float)employTotal/popTotal, 0, 1, 0, 20)*z;     
+        println(popE);
+        noStroke();
+        rectMode(CORNER);
+        fill(255, 0, 0, 180);
+        rect(pos.x - texW, pos.y, popE, popE);
+      }
+
+      //Visualizing Unemployment
+      if (r.getState(4)) {
+        float popU = map((float)unEmployTotal/popTotal, 0, 1, 0, 20)*z;     
+        noStroke();
+        rectMode(CORNER);
+        fill(255, 0, 0, 180);
+        rect(pos.x - texW, pos.y, popU, popU);
+      }
+      //District Names
+      fill(0, 255);
       textAlign(CENTER, BOTTOM);
       text(districtName, pos.x, pos.y);
-
-      //popRect
-      float popS = map(popTotal, 0, 240386, 0, 170);
-      noStroke();   
-      fill(255, 0, 0, 180);
-      rect(pos.x, pos.y, popS, popS);
     }
   }
 
@@ -84,6 +160,6 @@ void sliderTicks1(float val) {
   // handle slider event
   println("Slider event: " + val);
   cp5.getController("sliderTicks1").getValueLabel()
-    .setText("" + floor(val) + " Q" + (int) (val * 100 % 100 / 100 * 4 + 1));
+    .setText("_" + floor(val) + "_Q" + (int) (val * 100 % 100 / 100 * 4 + 1));
 }
 
